@@ -271,7 +271,7 @@ impl SessionBuilder {
 		}
 
 		self.custom_runtime_handles.push(handle);
-
+		ortsys![unsafe EnableOrtCustomOps(self.session_options_ptr)];
 		Ok(self)
 	}
 
