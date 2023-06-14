@@ -275,6 +275,20 @@ impl SessionBuilder {
 		Ok(self)
 	}
 
+	/// Registers a custom operator library with the in the default library path in the session.
+	pub fn with_custom_op_enabled(mut self) -> OrtResult<Self> {
+
+		let status = ortsys![unsafe EnableOrtCustomOps(self.session_options_ptr)];
+		// per RegisterCustomOpsLibrary docs, release handle if there was an error and the handle
+		// is non-null
+		match status_to_result(status).map_err(OrtError::CreateSessionOptions) {
+			Ok(_) => {}
+			Err(e) => {
+				return Err(e);
+			}
+		}
+		Ok(self)
+	}
 	/// Downloads a pre-trained ONNX model from the [ONNX Model Zoo](https://github.com/onnx/models) and builds the session.
 	#[cfg(feature = "fetch-models")]
 	pub fn with_model_downloaded<M>(self, model: M) -> OrtResult<Session>
